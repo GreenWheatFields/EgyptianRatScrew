@@ -24,6 +24,13 @@ public class Deck {
         }
         Collections.shuffle(this.cards);
     }
+    public Card[] getLastThree(int index){
+        Card[] toAnalyze = new Card[3];
+        for (int i = index, j = 2; i > index -3 || j >= 0; i--, j--) {
+            toAnalyze[j] = this.cards.get(i);
+        }
+        return toAnalyze;
+    }
     public void shuffle(){
         Collections.shuffle(this.cards);
     }
