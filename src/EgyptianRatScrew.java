@@ -1,18 +1,17 @@
 import java.util.concurrent.TimeUnit;
 
 public class EgyptianRatScrew{
-
+    private static Deck drawingDeck, player1Deck, player2Deck;
     
     public static void gameSetup(){
         
-        Deck drawingDeck = new Deck();
+        drawingDeck = new Deck();
         drawingDeck.createShuffledDeck();
-        Deck player1Deck = new Deck();
-        Deck player2Deck = new Deck();
+        player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
+        
         int playerCount = 2;
         int split = 52 / playerCount;
-        player1Deck.drawDeck(drawingDeck, split - 1, 0);
-        player2Deck.drawDeck(drawingDeck, split += split - 1, 26);
+        
     }
 
     public static void gameLoop(Deck deck) throws InterruptedException {
