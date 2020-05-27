@@ -20,7 +20,7 @@ public class Slapjack{
             return false;
         }
         Card[] toAnalyze = deck.getLastThree(count);
-        if(toAnalyze[0].)
+        if(toAnalyze[0].getValue() == toAnalyze)
         return false;
     }
     public static void main(String[] args) throws InterruptedException {
