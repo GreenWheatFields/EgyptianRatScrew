@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -10,6 +11,7 @@ public class Deck {
     public Deck(){
         this.cards = new ArrayList<Card>();
     }
+
     public void createFullDeck(){
         for (Suit cardSuit : Suit.values()){
             for (Value cardValue : Value.values()){
@@ -17,6 +19,7 @@ public class Deck {
             }
         }
     }
+
     public void createShuffledDeck(){
         for (Suit cardSuit : Suit.values()){
             for (Value cardValue : Value.values()){
@@ -25,6 +28,7 @@ public class Deck {
         }
         Collections.shuffle(this.cards);
     }
+
     public Card[] getLastThree(int index){
         Card[] toAnalyze = new Card[3];
         for (int i = index, j = 2; i > index -3 || j >= 0; i--, j--) {
@@ -33,14 +37,17 @@ public class Deck {
         
         return toAnalyze;
     }
-    public void drawDeck(Deck drawingFrom, int split){
-        for (int i = 0; i < split; i++) {
-            this.cards.add(drawingFrom.cards.get(i));
-        }
+
+    public static Deck drawDeck(Deck drawingFrom, int beginIndex, int endIndex){
+        Deck deck = new Deck();
+        deck.cards = new ArrayList<Card>(drawingFrom.cards.subList(0, 10));
+        return deck;
     }
+
     public void shuffle(){
         Collections.shuffle(this.cards);
     }
+
     public Card getCard(int i){
         return this.cards.get(i);
     }
@@ -48,6 +55,7 @@ public class Deck {
     public int getSize(){
         return this.cards.size();
     }
+    
 
 }
    

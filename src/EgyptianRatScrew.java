@@ -11,13 +11,11 @@ public class EgyptianRatScrew{
         Deck player2Deck = new Deck();
         int playerCount = 2;
         int split = 52 / playerCount;
-        player1Deck.drawDeck(drawingDeck, split - 1);
-        player2Deck.drawDeck(drawingDeck, split += split - 1);
+        player1Deck.drawDeck(drawingDeck, split - 1, 0);
+        player2Deck.drawDeck(drawingDeck, split += split - 1, 26);
     }
 
     public static void gameLoop(Deck deck) throws InterruptedException {
-        
-
         int count = 0;
         while (1 < 2){
             System.out.println(deck.getCard(count));
