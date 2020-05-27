@@ -5,9 +5,10 @@ public class Deck {
 
     private ArrayList<Card> cards;
     
+
+
     public Deck(){
         this.cards = new ArrayList<Card>();
-        
     }
     public void createFullDeck(){
         for (Suit cardSuit : Suit.values()){
@@ -29,7 +30,13 @@ public class Deck {
         for (int i = index, j = 2; i > index -3 || j >= 0; i--, j--) {
             toAnalyze[j] = this.cards.get(i);
         }
+        
         return toAnalyze;
+    }
+    public void drawDeck(Deck drawingFrom, int split){
+        for (int i = 0; i < split; i++) {
+            this.cards.add(drawingFrom.cards.get(i));
+        }
     }
     public void shuffle(){
         Collections.shuffle(this.cards);
