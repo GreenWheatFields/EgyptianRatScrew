@@ -46,7 +46,9 @@ public class EgyptianRatScrew{
             return result;
         }else if (toAnalyze[0].getSuit() == toAnalyze[2].getSuit() || toAnalyze[0].getValue() == toAnalyze[2].getValue()) {
             // test for sandwitch outright
-            result = new Result(true, "Sandwitch")
+            result = new Result(true, "Sandwitch");
+        }else if ( 1 == 2/*toAnalyze[2].getValue()*/) {
+            return null;
         }
         return null;
     }
