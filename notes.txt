@@ -1,7 +1,0 @@
-slap on double(value)
-marriage(king queen)
-jack,
-joker(consider adding joker)
-sandwitch(value)
-
-determine wheter value or suits are slappable in pairs and doubles

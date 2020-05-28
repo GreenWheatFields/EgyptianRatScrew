@@ -1,0 +1,11 @@
+slap on double(value)
+marriage(king queen)
+jack,
+joker(consider adding joker)
+sandwich(value)
+determine whether value or suits are slappable in pairs and doubles
+
+------------
+TODO
+add early returns to if else
+test isSlappable method
