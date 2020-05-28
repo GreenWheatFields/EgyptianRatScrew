@@ -24,15 +24,31 @@ public class EgyptianRatScrew{
             if (count >= 52){break;}
         }
     }
-    public static boolean isSlapable(Deck deck, int count, boolean isFirstTwo){
+    public static Result isSlapable(Deck deck, int count, boolean isFirstTwo){
+        Result result;
         if(isFirstTwo == true){
-            return false;
-        }
-        Card[] toAnalyze = deck.getLastThree(count);
-        if(toAnalyze[2].getValue() == toAnalyze[1].getValue()){
+            // this will need to be rewritten
+            result = new Result(false, "Insufficent Material");
+            
+            return result;
             
         }
-        return false;
+
+        Card[] toAnalyze = deck.getLastThree(count);
+
+        // test for pair
+        if(toAnalyze[2].getValue() == toAnalyze[1].getValue() || toAnalyze[2].getSuit() == toAnalyze[1].getSuit()){
+            result = new Result(true, "Pair");
+            // test within this test for a sandwich;
+            if(toAnalyze[0].getSuit() == toAnalyze[2].getSuit() || toAnalyze[0].getValue() == toAnalyze[2].getValue()){
+                result = new Result(true, "Pair/Sandwitch");
+            }
+            return result;
+        }else if (toAnalyze[0].getSuit() == toAnalyze[2].getSuit() || toAnalyze[0].getValue() == toAnalyze[2].getValue()) {
+            // test for sandwitch outright
+            result = new Result(true, "Sandwitch")
+        }
+        return null;
     }
     public static void main(String[] args) throws InterruptedException {
         //gameLoop();
