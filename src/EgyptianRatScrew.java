@@ -37,7 +37,7 @@ public class EgyptianRatScrew implements CardStats{
         }
 
         Card[] toAnalyze = deck.getLastThree(count);
-        //HashSet<Integer> temp = new HashSet<Integer>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue())))
+        HashSet<Integer> hashedValues = new HashSet<Integer>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue()), alphaNumeric.get(toAnalyze[1].getValue()), alphaNumeric.get(toAnalyze[0].getValue()))));
 
         // test for pair
         if(toAnalyze[2].getValue() == toAnalyze[1].getValue() || toAnalyze[2].getSuit() == toAnalyze[1].getSuit()){
@@ -64,11 +64,12 @@ public class EgyptianRatScrew implements CardStats{
                     result = new Result(true, "Ascending");
                     return result;
                 }
-        else if(marriage.contains(alphaNumeric.get(toAnalyze[2].getValue())) && marriage.contains(alphaNumeric.get(toAnalyze[1].getValue())) && toAnalyze[2].getValue() != toAnalyze[1].getValue()){
+        else if(isMarriage(toAnalyze, hashedValues)){
                 result = new Result(true, "Marriage");
                 return result;
-        }else if(1 == 2){
-            
+        }else if(isRoyalFamily(toAnalyze, hashedValues)){
+                result = new Result(true, "Family");
+                return result;
         }
             
         
@@ -78,10 +79,29 @@ public class EgyptianRatScrew implements CardStats{
         }
         return null;
     }
-    public boolean isRoyalFamily(Card[] toAnalyze){
-        if(1 == 2/*royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue()))) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue() && toAnalyze[1])*/){}
-            
-        return true;
+    public static boolean isAscending(Card[] toAnalyze){
+        if(alphaNumeric.get(toAnalyze[0].getValue()) + 1  == alphaNumeric.get(toAnalyze[1].getValue())){
+            if (alphaNumeric.get(toAnalyze[1].getValue()) + 1 == alphaNumeric.get(toAnalyze[2].getValue())){
+                return true;
+            }
+
+    }
+    return false;
+    }
+
+    public static boolean isMarriage(Card[] toAnalyze, HashSet hashedValues){
+        if (marriage.contains(alphaNumeric.get(toAnalyze[2].getValue())) && marriage.contains(alphaNumeric.get(toAnalyze[1].getValue())) && hashedValues.size() == toAnalyze.length) {
+           return true; 
+        }
+        return false;
+    }
+
+    public static boolean isRoyalFamily(Card[] toAnalyze, HashSet hashedValues){
+        // hashset has no duplicates, so if for example you have three kings, it will read as a royal family until it analyzes size.
+        if(royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue())) && hashedValues.size() == toAnalyze.length){
+            return true;
+        }
+        return false;
     }
         
    
