@@ -36,6 +36,14 @@ public class Deck implements CardStats{
         
         return toAnalyze;
     }
+    public Card[] getLastTwo(int index){
+        Card[] toAnalyze = new Card[2];
+        for (int i = index, j = 1; i > index -2 || j >= 0; i--, j--) {
+            toAnalyze[j] = this.cards.get(i);
+        }
+        
+        return toAnalyze;
+    }
 
     public static Deck drawDeck(Deck drawingFrom, int beginIndex, int endIndex){
         Deck deck = new Deck();
@@ -53,6 +61,11 @@ public class Deck implements CardStats{
     
     public int getSize(){
         return this.cards.size();
+    }
+    public void customFill(Card ...cards){
+        for (Card card : cards) {
+            this.cards.add(card);
+        }
     }
     
 

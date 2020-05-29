@@ -21,59 +21,58 @@ public class EgyptianRatScrew implements CardStats{
         int count = 0;
         while (true){
             System.out.println(drawingDeck.getCard(count));
+            
+            Result result = isSlapable(drawingDeck, count);
+            System.out.println(result.reason());
+            
             count++;
-            if(count > 3){
-                Result result = isSlapable(drawingDeck, count, false);
-                System.out.println(result.reason());
-            }
             TimeUnit.SECONDS.sleep(1);
-            count++;
             if (count >= 52){break;}
         }
     }
-    public Result isSlapable(Deck deck, int count, boolean isFirstTwo){
+    public Result isSlapable(Deck deck, int count){
         Result result;
-        if(isFirstTwo == true){
-            // this will need to be rewritten
+        if(count < 1){
             result = new Result(false, "Insufficient Material");
-            
             return result;
-            
+        }
+        // for this to work it will probably need an optional temp paramere , until then.
+        Card[] toAnalyze = (count == 1) ? deck.getLastTwo(count): deck.getLastThree(count);
+        if(toAnalyze.length == 2 && isPairFirstTwo(toAnalyze)){
+            result = new Result(true, "Pair");
+            return result;
+        }else if (toAnalyze.length == 2 && !isPairFirstTwo(toAnalyze)) {
+            result = new Result(false, "Invalid");
+            return result;
         }
 
-        Card[] toAnalyze = deck.getLastThree(count);
         HashSet<Integer> hashedValues = new HashSet<Integer>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue()), alphaNumeric.get(toAnalyze[1].getValue()), alphaNumeric.get(toAnalyze[0].getValue())));
 
         if(isPair(toAnalyze)){
-            result = new Result(true, "Pair");
-
             if(isSandwich(toAnalyze)){
-                            // test within this test for a sandwich;
-                result = new Result(true, "Pair/Sandwich");
-                
+                return new Result(true, "Pair/Sandwich");
             }
-            return result;
+            return new Result(true, "Pair");
+
         }else if (isSandwich(toAnalyze)) {
-                result = new Result(true, "Sandwich");
-                return result;
-            
+                return new Result(true, "Sandwich");
+
         }else if (isDescending(toAnalyze)){
-                result = new Result(true, "Descending");
-                return result;
+                return new Result(true, "Descending");
             }
+
         else if(isAscending(toAnalyze)){
-                result = new Result(true, "Ascending");
-                return result;
+                return new Result(true, "Ascending");
         }
+
         else if(isMarriage(toAnalyze, hashedValues)){
-                result = new Result(true, "Marriage");
-                return result;
+                return new Result(true, "Marriage");
+
         }else if(isRoyalFamily(toAnalyze, hashedValues)){
-                result = new Result(true, "Royal Family");
-                return result;
+                return new Result(true, "Royal Family");
         }
-        result = new Result(false, "Invalid");
-        return result;
+        
+        return new Result(false, "Invalid");
         
     }
     public boolean isPair(Card[] toAnalyze){
@@ -119,6 +118,12 @@ public class EgyptianRatScrew implements CardStats{
     public boolean isRoyalFamily(Card[] toAnalyze, HashSet hashedValues){
         // hashset has no duplicates, so if for example you have three kings, it will read as a royal family until it analyzes size.
         if(royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue())) && hashedValues.size() == toAnalyze.length){
+            return true;
+        }
+        return false;
+    }
+    public boolean isPairFirstTwo(Card[] toAnalyze){
+        if(toAnalyze[1].getValue() == toAnalyze[0].getValue() || toAnalyze[1].getSuit() == toAnalyze[0].getSuit()){
             return true;
         }
         return false;

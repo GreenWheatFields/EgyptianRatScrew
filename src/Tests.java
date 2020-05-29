@@ -49,6 +49,16 @@ public class Tests implements CardStats{
         card = new Card(Suit.SPADE, Value.KING);
         assertSame(13, alphaNumeric.get(card.getValue()));
     }
+
+    @Test
+    public void testCustomDecks(){
+        Card jack = new Card(Suit.HEART, Value.JACK);
+        Card king = new Card(Suit.HEART, Value.KING);
+        Card queen = new Card(Suit.HEART, Value.QUEEN);
+        drawingDeck.customFill(jack, king, queen);
+        System.out.println(drawingDeck.getSize());
+    }
+
     @Test @Ignore
     
     public void testSimpleIf(){
