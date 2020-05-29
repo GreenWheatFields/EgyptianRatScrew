@@ -49,7 +49,8 @@ public class Tests implements CardStats{
         card = new Card(Suit.SPADE, Value.KING);
         assertSame(13, alphaNumeric.get(card.getValue()));
     }
-    @Test
+    @Test @Ignore
+    
     public void testSimpleIf(){
         // did this in python, just making sure
         boolean test = true;

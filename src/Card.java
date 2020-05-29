@@ -19,9 +19,5 @@ public class Card implements CardStats{
     public Card toJoker(){
         return null;
     }
-    public int alphanumericaValue(){
-        return 0;
-    }
-
 }
 
