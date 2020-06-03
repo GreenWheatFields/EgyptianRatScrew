@@ -7,11 +7,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class Tests implements CardStats{
-    private Deck player1Deck, player2Deck, drawingDeck;
-    public int playerCount = 2;
-    public int split = 52 / playerCount;
+    Deck player1Deck, player2Deck, drawingDeck;
+    int playerCount = 2;
+    int split = 52 / playerCount;
 
-    private Card card;
+
+    Card card;
+    EgyptianRatScrew ers = new EgyptianRatScrew();
+    Result result;
 
 
 
@@ -50,13 +53,30 @@ public class Tests implements CardStats{
         assertSame(13, alphaNumeric.get(card.getValue()));
     }
 
-    @Test
+    @Test @Ignore
     public void testCustomDecks(){
         Card jack = new Card(Suit.HEART, Value.JACK);
         Card king = new Card(Suit.HEART, Value.KING);
         Card queen = new Card(Suit.HEART, Value.QUEEN);
         drawingDeck.customFill(jack, king, queen);
-        System.out.println(drawingDeck.getSize());
+        assertEquals(3, drawingDeck.getSize());
+    }
+    @Test
+    public void testRoyalFamily(){
+        //should test for pair / sandwitch last.
+        Card jack = new Card(Suit.HEART, Value.JACK);
+        Card king = new Card(Suit.CLUB, Value.KING);
+        Card queen = new Card(Suit.SPADE, Value.QUEEN);
+        drawingDeck.customFill(king, jack, queen);
+        
+        result = ers.isSlapable(drawingDeck, 2);
+        if (result == null) {
+            System.out.println("Null Result");
+            fail();
+        }
+        Result target = new Result(true, "Royal Family");
+        assertEquals(target.reason(), result.reason());
+
     }
 
     @Test @Ignore

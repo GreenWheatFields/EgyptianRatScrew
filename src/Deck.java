@@ -63,6 +63,7 @@ public class Deck implements CardStats{
         return this.cards.size();
     }
     public void customFill(Card ...cards){
+        this.cards = new ArrayList<Card>();
         for (Card card : cards) {
             this.cards.add(card);
         }
