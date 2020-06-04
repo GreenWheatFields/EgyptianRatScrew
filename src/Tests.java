@@ -1,6 +1,9 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+
+import java.security.cert.CertPathValidatorException.Reason;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -61,34 +64,90 @@ public class Tests implements CardStats{
         drawingDeck.customFill(jack, king, queen);
         assertEquals(3, drawingDeck.getSize());
     }
-    @Test
+    @Test @Ignore
     public void testRoyalFamily(){
-        //should test for pair / sandwitch last.
-        Card jack = new Card(Suit.HEART, Value.JACK);
-        Card king = new Card(Suit.CLUB, Value.KING);
-        Card queen = new Card(Suit.SPADE, Value.QUEEN);
-        drawingDeck.customFill(king, jack, queen);
         
+        Result target = new Result(true, "Royal Family");
+
+        Card jack = new Card(Suit.HEART, Value.JACK);
+        Card king = new Card(Suit.HEART, Value.KING);
+        Card queen = new Card(Suit.HEART, Value.QUEEN);
+
+        drawingDeck.customFill(king, jack, queen);
+
         result = ers.isSlapable(drawingDeck, 2);
+
         if (result == null) {
-            System.out.println("Null Result");
+            System.out.println("Null Object");
             fail();
         }
-        Result target = new Result(true, "Royal Family");
+        
+        assertEquals(target.reason(), result.reason());
+
+        drawingDeck.customFill(king, queen, jack);
+        result = ers.isSlapable(drawingDeck, 2);
+
+        assertEquals(target.reason(), result.reason());
+
+        drawingDeck.customFill(jack, queen, king);
+        result = ers.isSlapable(drawingDeck, 2);
+
         assertEquals(target.reason(), result.reason());
 
     }
+    @Test //@Ignore
+    public void testAscending(){
+        Result target = new Result(true, "Ascending");
 
-    @Test @Ignore
-    
-    public void testSimpleIf(){
-        // did this in python, just making sure
-        boolean test = true;
-        int x = 0;
-        if(test){
-            x = 1;
-        }
-        System.out.println(x);
-        assertEquals(1, x);
+        Card two = new Card(Suit.CLUB, Value.TWO);
+        Card three = new Card(Suit.HEART, Value.THREE);
+        Card four = new Card(Suit.HEART, Value.FOUR);
+
+        drawingDeck.customFill(two, three, four); //top down
+        result = ers.isSlapable(drawingDeck, 2);
+
+        assertEquals(target.reason(), result.reason());
+
+        drawingDeck.customFill(three, two, four);
+        result = ers.isSlapable(drawingDeck, 2);
+
+        assertFalse(target.reason() == result.reason());
+
+        Card jack = new Card(Suit.HEART, Value.JACK);
+        Card king = new Card(Suit.HEART, Value.KING);
+        Card queen = new Card(Suit.HEART, Value.QUEEN);
+
+        drawingDeck.customFill(jack, queen, king);
+        result = ers.isSlapable(drawingDeck, 2);
+        //royal family should be first not ascend/descend
+
+        assertFalse(target.reason() == result.reason());
+        
     }
+    @Test //@Ignore
+    public void testDescending(){
+        Result target = new Result(true, "Descending");
+
+        Card two = new Card(Suit.CLUB, Value.TWO);
+        Card three = new Card(Suit.HEART, Value.THREE);
+        Card four = new Card(Suit.HEART, Value.FOUR);
+        Card ace = new Card(Suit.SPADE, Value.ACE);
+        Card nine = new Card(Suit.CLUB, Value.NINE);
+        Card ten = new Card(Suit.DIAMOND, Value.TEN);
+        Card jack = new Card(Suit.HEART, Value.JACK);
+
+
+
+        drawingDeck.customFill(jack, ten, nine);
+        result = ers.isSlapable(drawingDeck, 2);
+        assertEquals(target.reason(), result.reason());
+
+
+        drawingDeck.customFill(three, two, ace);
+        result = ers.isSlapable(drawingDeck, 2);
+        assertEquals(target.reason(), result.reason());
+        
+    }
+
+    
 }

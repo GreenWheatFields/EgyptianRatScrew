@@ -1,9 +1,11 @@
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class EgyptianRatScrew implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
+    Scanner userInput = new Scanner(System.in);
     
     public void gameSetup(){
         
@@ -21,8 +23,11 @@ public class EgyptianRatScrew implements CardStats{
         int count = 0;
         while (true){
             System.out.println(drawingDeck.getCard(count));
-            
             Result result = isSlapable(drawingDeck, count);
+                        
+
+
+
             System.out.println(result.reason());
             
             count++;
@@ -48,31 +53,32 @@ public class EgyptianRatScrew implements CardStats{
 
         HashSet<Integer> hashedValues = new HashSet<Integer>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue()), alphaNumeric.get(toAnalyze[1].getValue()), alphaNumeric.get(toAnalyze[0].getValue())));
 
-        if(isPair(toAnalyze)){
+        if(isRoyalFamily(toAnalyze, hashedValues)){
+            return new Result(true, "Royal Family");
+            
+        }else if(isMarriage(toAnalyze, hashedValues)){
+            return new Result(true, "Marriage");
+
+        }else if (isAscending(toAnalyze)){
+                return new Result(true, "Ascending");
+
+        }else if(isDescending(toAnalyze)){
+                return new Result(true, "Descending");
+
+        }else if (isSandwich(toAnalyze)) {
+            return new Result(true, "Sandwich");
+
+        }else if(isPair(toAnalyze)){
+
             if(isSandwich(toAnalyze)){
                 return new Result(true, "Pair/Sandwich");
             }
             return new Result(true, "Pair");
 
-        }else if (isSandwich(toAnalyze)) {
-                return new Result(true, "Sandwich");
-
-        }else if (isDescending(toAnalyze)){
-                return new Result(true, "Descending");
-            }
-
-        else if(isAscending(toAnalyze)){
-                return new Result(true, "Ascending");
-        }
-
-        else if(isMarriage(toAnalyze, hashedValues)){
-                return new Result(true, "Marriage");
-
-        }else if(isRoyalFamily(toAnalyze, hashedValues)){
-                return new Result(true, "Royal Family");
+        }else{
+            return new Result(false, "Invalid");
         }
         
-        return new Result(false, "Invalid");
         
     }
     public boolean isPair(Card[] toAnalyze){
@@ -89,7 +95,7 @@ public class EgyptianRatScrew implements CardStats{
         return false;
 }
 
-    public boolean isDescending(Card[] toAnalyze){
+    public boolean isAscending(Card[] toAnalyze){
         if (alphaNumeric.get(toAnalyze[2].getValue()) - 1 == alphaNumeric.get(toAnalyze[1].getValue())){
             if (alphaNumeric.get(toAnalyze[1].getValue()) - 1 == alphaNumeric.get(toAnalyze[0].getValue())) {
                 return true;
@@ -98,9 +104,9 @@ public class EgyptianRatScrew implements CardStats{
         return false;
     }
 
-    public boolean isAscending(Card[] toAnalyze){
-        if(alphaNumeric.get(toAnalyze[0].getValue()) + 1  == alphaNumeric.get(toAnalyze[1].getValue())){
-            if (alphaNumeric.get(toAnalyze[1].getValue()) + 1 == alphaNumeric.get(toAnalyze[2].getValue())){
+    public boolean isDescending(Card[] toAnalyze){
+        if(alphaNumeric.get(toAnalyze[2].getValue()) + 1  == alphaNumeric.get(toAnalyze[1].getValue())){
+            if (alphaNumeric.get(toAnalyze[1].getValue()) + 1 == alphaNumeric.get(toAnalyze[0].getValue())){
                 return true;
             }
             return false;
@@ -108,14 +114,14 @@ public class EgyptianRatScrew implements CardStats{
     return false;
     }
 
-    public boolean isMarriage(Card[] toAnalyze, HashSet hashedValues){
+    public boolean isMarriage(Card[] toAnalyze, HashSet<Integer> hashedValues){
         if (marriage.contains(alphaNumeric.get(toAnalyze[2].getValue())) && marriage.contains(alphaNumeric.get(toAnalyze[1].getValue())) && hashedValues.size() == toAnalyze.length) {
            return true; 
         }
         return false;
     }
 
-    public boolean isRoyalFamily(Card[] toAnalyze, HashSet hashedValues){
+    public boolean isRoyalFamily(Card[] toAnalyze, HashSet<Integer> hashedValues){
         // hashset has no duplicates, so if for example you have three kings, it will read as a royal family until it analyzes size.
         if(royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue())) && hashedValues.size() == toAnalyze.length){
             return true;
