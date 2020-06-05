@@ -3,8 +3,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import java.security.cert.CertPathValidatorException.Reason;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -3,16 +3,18 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+
 public class EgyptianRatScrew implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
     Scanner userInput = new Scanner(System.in);
+    public volatile static boolean threadsTurn = true;
+    
     
     public void gameSetup(){
         
         drawingDeck = new Deck();
         drawingDeck.createShuffledDeck();
         player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
-        
         int playerCount = 2;
         int split = 52 / playerCount;
         
@@ -21,17 +23,32 @@ public class EgyptianRatScrew implements CardStats{
     public void gameLoop() throws InterruptedException {
         gameSetup();
         int count = 0;
+        acceptUserInput input = new acceptUserInput();
+        input.start();
+
+        
         while (true){
-            System.out.println(drawingDeck.getCard(count));
+            
+            threadsTurn = true;
+            
             Result result = isSlapable(drawingDeck, count);
-                        
-
-
-
-            System.out.println(result.reason());
+            //long startTime = System.currentTimeMillis() * 1000;
+            System.out.println(drawingDeck.getCard(count));
+            
+            TimeUnit.SECONDS.sleep(1);
+            System.out.println("HERE");
+            threadsTurn = false;            
+            //input.interrupt();
+            System.out.println(input.isAlive());
+            
+            
+            
+            
+            
+            //System.out.println(result.reason());
             
             count++;
-            TimeUnit.SECONDS.sleep(1);
+            //TimeUnit.SECONDS.sleep(1);
             if (count >= 52){break;}
         }
     }
@@ -41,7 +58,6 @@ public class EgyptianRatScrew implements CardStats{
             result = new Result(false, "Insufficient Material");
             return result;
         }
-        // for this to work it will probably need an optional temp paramere , until then.
         Card[] toAnalyze = (count == 1) ? deck.getLastTwo(count): deck.getLastThree(count);
         if(toAnalyze.length == 2 && isPairFirstTwo(toAnalyze)){
             result = new Result(true, "Pair");
@@ -134,6 +150,8 @@ public class EgyptianRatScrew implements CardStats{
         }
         return false;
     }
+    
+    
         
    
     public static void main(String[] args) throws InterruptedException {
