@@ -7,7 +7,9 @@ import java.util.concurrent.TimeUnit;
 public class EgyptianRatScrew implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
     Scanner userInput = new Scanner(System.in);
-    public volatile static boolean threadsTurn = true;
+    public volatile static boolean inputThreadsTurn = true;
+    public volatile static int guessPerRound = 0;
+
     
     
     public void gameSetup(){
@@ -28,23 +30,19 @@ public class EgyptianRatScrew implements CardStats{
 
         
         while (true){
-            
-            threadsTurn = true;
-            
+            acceptUserInput.hasResponded = false;
+            acceptUserInput.userResponse = "@";
+            inputThreadsTurn = true;
             Result result = isSlapable(drawingDeck, count);
             //long startTime = System.currentTimeMillis() * 1000;
             System.out.println(drawingDeck.getCard(count));
-            
+
             TimeUnit.SECONDS.sleep(1);
-            System.out.println("HERE");
-            threadsTurn = false;            
-            //input.interrupt();
-            System.out.println(input.isAlive());
+            inputThreadsTurn = false;
             
-            
-            
-            
-            
+            if(acceptUserInput.hasResponded && result.isSlappable()){
+                System.out.println("CORRECT");
+            }
             //System.out.println(result.reason());
             
             count++;

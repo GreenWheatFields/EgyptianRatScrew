@@ -1,27 +1,21 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.util.Scanner;
 
 public class acceptUserInput extends Thread {
     Scanner userInput = new Scanner(System.in);
     public volatile static String userResponse = "@";
-    public volatile boolean hasResponded;
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public volatile static boolean hasResponded;
 
     public void run() {
-        while (EgyptianRatScrew.threadsTurn) {
-            System.out.println("value of userresponse " + userResponse);
-            System.out.println("here");
-            userResponse = userInput.nextLine();            
+        while (EgyptianRatScrew.inputThreadsTurn ) {
+            // will need a way to listen for input and stop someone from spamming 
+            userResponse = userInput.nextLine();
             System.out.println("input detected");
             hasResponded = true;
+            
         }
     }
     
-    public String getUserResponse(){return userResponse;}
-    public boolean getHasResponded(){return hasResponded;} //probably redundant, can just check if string is null
+    
 
     // testing how threads interact
     // public void game() throws InterruptedException {
