@@ -1,17 +1,15 @@
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 
 public class EgyptianRatScrew implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
-    Scanner userInput = new Scanner(System.in);
-    public volatile static boolean inputThreadsTurn = true;
-    public volatile static int guessPerRound = 0;
+    public static Scanner userInput = new Scanner(System.in);
+    public static boolean listeningForInput = true;
 
-    
-    
+
     public void gameSetup(){
         
         drawingDeck = new Deck();
@@ -22,31 +20,32 @@ public class EgyptianRatScrew implements CardStats{
         
     }
 
-    public void gameLoop() throws InterruptedException {
+    public void gameLoop() throws InterruptedException, IOException {
         gameSetup();
         int count = 0;
-        acceptUserInput input = new acceptUserInput();
-        input.start();
+        boolean listeningForInput = false;
 
-        
         while (true){
-            acceptUserInput.hasResponded = false;
-            acceptUserInput.userResponse = "@";
-            inputThreadsTurn = true;
-            Result result = isSlapable(drawingDeck, count);
-            //long startTime = System.currentTimeMillis() * 1000;
-            System.out.println(drawingDeck.getCard(count));
+            acceptUserInput input = new acceptUserInput();
+            input.setName("InputThread");
+            input.start();
 
-            TimeUnit.SECONDS.sleep(1);
-            inputThreadsTurn = false;
-            
-            if(acceptUserInput.hasResponded && result.isSlappable()){
-                System.out.println("CORRECT");
+            acceptUserInput.hasResponded = false;
+            Result result = isSlapable(drawingDeck, count);
+
+            System.out.println(drawingDeck.getCard(count));
+            //TimeUnit.SECONDS.sleep(1); // should be wait, and, should sleep on another thread instead of the main thread input thread notifys sleeping thread, notifies main thread
+            synchronized (this) {
+                wait(1000);
             }
-            //System.out.println(result.reason());
-            
+            input.close();
+
+
+
+            if(acceptUserInput.hasResponded && result.isSlappable()){
+                System.out.println("CORRECT + " + result.reason());
+            }
             count++;
-            //TimeUnit.SECONDS.sleep(1);
             if (count >= 52){break;}
         }
     }
@@ -65,7 +64,7 @@ public class EgyptianRatScrew implements CardStats{
             return result;
         }
 
-        HashSet<Integer> hashedValues = new HashSet<Integer>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue()), alphaNumeric.get(toAnalyze[1].getValue()), alphaNumeric.get(toAnalyze[0].getValue())));
+        HashSet<Integer> hashedValues = new HashSet<>(Arrays.asList(alphaNumeric.get(toAnalyze[2].getValue()), alphaNumeric.get(toAnalyze[1].getValue()), alphaNumeric.get(toAnalyze[0].getValue())));
 
         if(isRoyalFamily(toAnalyze, hashedValues)){
             return new Result(true, "Royal Family");
@@ -96,63 +95,43 @@ public class EgyptianRatScrew implements CardStats{
         
     }
     public boolean isPair(Card[] toAnalyze){
-        if(toAnalyze[2].getValue() == toAnalyze[1].getValue() || toAnalyze[2].getSuit() == toAnalyze[1].getSuit()){
-            return true;
-        }
-        return false;
+        return toAnalyze[2].getValue() == toAnalyze[1].getValue() || toAnalyze[2].getSuit() == toAnalyze[1].getSuit();
     }
 
     public boolean isSandwich(Card[] toAnalyze){
-        if (toAnalyze[0].getSuit() == toAnalyze[2].getSuit() || toAnalyze[0].getValue() == toAnalyze[2].getValue()) {
-            return true;          
-        }
-        return false;
-}
+        return toAnalyze[0].getSuit() == toAnalyze[2].getSuit() || toAnalyze[0].getValue() == toAnalyze[2].getValue();
+    }
 
     public boolean isAscending(Card[] toAnalyze){
         if (alphaNumeric.get(toAnalyze[2].getValue()) - 1 == alphaNumeric.get(toAnalyze[1].getValue())){
-            if (alphaNumeric.get(toAnalyze[1].getValue()) - 1 == alphaNumeric.get(toAnalyze[0].getValue())) {
-                return true;
-            }
+            return alphaNumeric.get(toAnalyze[1].getValue()) - 1 == alphaNumeric.get(toAnalyze[0].getValue());
         }
         return false;
     }
 
     public boolean isDescending(Card[] toAnalyze){
         if(alphaNumeric.get(toAnalyze[2].getValue()) + 1  == alphaNumeric.get(toAnalyze[1].getValue())){
-            if (alphaNumeric.get(toAnalyze[1].getValue()) + 1 == alphaNumeric.get(toAnalyze[0].getValue())){
-                return true;
-            }
-            return false;
-    }
+            return alphaNumeric.get(toAnalyze[1].getValue()) + 1 == alphaNumeric.get(toAnalyze[0].getValue());
+        }
     return false;
     }
 
     public boolean isMarriage(Card[] toAnalyze, HashSet<Integer> hashedValues){
-        if (marriage.contains(alphaNumeric.get(toAnalyze[2].getValue())) && marriage.contains(alphaNumeric.get(toAnalyze[1].getValue())) && hashedValues.size() == toAnalyze.length) {
-           return true; 
-        }
-        return false;
+        return marriage.contains(alphaNumeric.get(toAnalyze[2].getValue())) && marriage.contains(alphaNumeric.get(toAnalyze[1].getValue())) && hashedValues.size() == toAnalyze.length;
     }
 
     public boolean isRoyalFamily(Card[] toAnalyze, HashSet<Integer> hashedValues){
         // hashset has no duplicates, so if for example you have three kings, it will read as a royal family until it analyzes size.
-        if(royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue())) && hashedValues.size() == toAnalyze.length){
-            return true;
-        }
-        return false;
+        return royalFamily.contains(alphaNumeric.get(toAnalyze[0].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[1].getValue())) && royalFamily.contains(alphaNumeric.get(toAnalyze[2].getValue())) && hashedValues.size() == toAnalyze.length;
     }
     public boolean isPairFirstTwo(Card[] toAnalyze){
-        if(toAnalyze[1].getValue() == toAnalyze[0].getValue() || toAnalyze[1].getSuit() == toAnalyze[0].getSuit()){
-            return true;
-        }
-        return false;
+        return toAnalyze[1].getValue() == toAnalyze[0].getValue() || toAnalyze[1].getSuit() == toAnalyze[0].getSuit();
     }
     
     
         
    
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         //gameLoop();
         EgyptianRatScrew start = new EgyptianRatScrew();
         start.gameLoop();
