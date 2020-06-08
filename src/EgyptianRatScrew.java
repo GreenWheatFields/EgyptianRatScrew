@@ -7,9 +7,8 @@ import java.util.Scanner;
 public class EgyptianRatScrew extends Thread implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
     public static Scanner userInput = new Scanner(System.in);
-    public static boolean listeningForInput = true;
     public static final Object gameLock = new Object();
-
+    public static volatile boolean wokenByUserInput;
     public void gameSetup(){
         
         drawingDeck = new Deck();
@@ -23,33 +22,27 @@ public class EgyptianRatScrew extends Thread implements CardStats{
     public void gameLoop() throws InterruptedException, IOException {
         gameSetup();
         int count = 0;
-        boolean listeningForInput = false;
 
-        while (true){
+        while (count <= 52){
             acceptUserInput input = new acceptUserInput();
             input.setName("InputThread");
             input.start();
-
             acceptUserInput.hasResponded = false;
+
             Result result = isSlapable(drawingDeck, count);
 
             System.out.println(drawingDeck.getCard(count));
-            //TimeUnit.SECONDS.sleep(1); // should be wait, and, should sleep on another thread instead of the main thread input thread notifys sleeping thread, notifies main thread
-            synchronized (this) {
-                System.out.println("sleeping");
-                wait(0);
-                System.out.println("awake");
+            synchronized (gameLock) {
+                gameLock.wait(1000);
             }
-
-            System.out.println("done sleeping");
             input.interrupt();
+            if (wokenByUserInput) System.out.println("woken by user input");
 
-
+            wokenByUserInput = false;
             if(acceptUserInput.hasResponded && result.isSlappable()){
                 System.out.println("CORRECT + " + result.reason());
             }
             count++;
-            if (count >= 52){break;}
         }
     }
     public Result isSlapable(Deck deck, int count){
