@@ -4,33 +4,36 @@ import java.io.InputStreamReader;
 
 public class acceptUserInput extends Thread {
     public volatile static boolean hasResponded;
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public BufferedReader br;
+    public acceptUserInput(){
+    }
 
+    @Override
     public void run() {
+        super.run();
         try {
+            br = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println(br.ready() + "STATUS");
             getInput();
         } catch (IOException e) {
-            System.out.println("lol");
+            System.out.println("exception caught");
             //e.printStackTrace();
         }
     }
     public void getInput() throws IOException {
-        while(true){
-            while (br.ready() && EgyptianRatScrew.listeningForInput){
-                //System.out.println("ready");
-            hasResponded = true;
-                //signal response, awake main thread
-                //there may be a better practice to resetting buffered reader but i forgot it
-                br.reset();
-            }
-            while (!br.ready() && EgyptianRatScrew.listeningForInput){
-                //System.out.println("waiting");
-
-            }
+        String lookForInput = null;
+        while(lookForInput == null){
+            lookForInput = br.readLine();
+        }
+        System.out.println("detected");
+        synchronized (this){
+            System.out.println("notfying");
+            notifyAll();
+            System.out.println("notified");
         }
     }
     public  void close() throws IOException {
-        br.close();
+        interrupt();
     }
 
     }

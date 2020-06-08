@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 
-public class EgyptianRatScrew implements CardStats{
+public class EgyptianRatScrew extends Thread implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
     public static Scanner userInput = new Scanner(System.in);
     public static boolean listeningForInput = true;
-
+    public static final Object gameLock = new Object();
 
     public void gameSetup(){
         
@@ -36,10 +36,13 @@ public class EgyptianRatScrew implements CardStats{
             System.out.println(drawingDeck.getCard(count));
             //TimeUnit.SECONDS.sleep(1); // should be wait, and, should sleep on another thread instead of the main thread input thread notifys sleeping thread, notifies main thread
             synchronized (this) {
-                wait(1000);
+                System.out.println("sleeping");
+                wait(0);
+                System.out.println("awake");
             }
-            input.close();
 
+            System.out.println("done sleeping");
+            input.interrupt();
 
 
             if(acceptUserInput.hasResponded && result.isSlappable()){
@@ -127,14 +130,25 @@ public class EgyptianRatScrew implements CardStats{
     public boolean isPairFirstTwo(Card[] toAnalyze){
         return toAnalyze[1].getValue() == toAnalyze[0].getValue() || toAnalyze[1].getSuit() == toAnalyze[0].getSuit();
     }
-    
-    
-        
-   
+
+    @Override
+    public void run() {
+        super.run();
+        try {
+            gameLoop();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void main(String[] args) throws InterruptedException, IOException {
         //gameLoop();
-        EgyptianRatScrew start = new EgyptianRatScrew();
-        start.gameLoop();
+        EgyptianRatScrew ers = new EgyptianRatScrew();
+        ers.setName("GameThread");
+        ers.start();
         System.out.println("done");
     }
 }
