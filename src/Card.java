@@ -1,7 +1,7 @@
 
 public class Card implements CardStats{
-    private Suit suit;
-    private Value value;
+    private final Suit suit;
+    private final Value value;
 
     public Card(Suit suit, Value value){
         this.value = value;
@@ -16,8 +16,8 @@ public class Card implements CardStats{
     public Suit getSuit(){
         return this.suit;
     }
-    public Card toJoker(){
-        return null;
-    }
+//    public Card toJoker(){
+//        return null;
+//    }
 }
 

@@ -1,6 +1,6 @@
 public class Result {
-    private String reason;
-    private boolean isSlappable;
+    private final String reason;
+    private final boolean isSlappable;
 
     public Result(boolean isSlappable, String reason){
         this.reason = reason;

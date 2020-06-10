@@ -51,9 +51,9 @@ public class Deck implements CardStats{
         return deck;
     }
 
-    public void shuffle(){
-        Collections.shuffle(this.cards);
-    }
+//    public void shuffle(){
+//        Collections.shuffle(this.cards);
+//    }
 
     public Card getCard(int i){
         return this.cards.get(i);

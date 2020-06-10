@@ -4,36 +4,44 @@ import java.io.InputStreamReader;
 
 public class acceptUserInput extends Thread {
     public volatile static boolean hasResponded;
-    public BufferedReader br;
+    BufferedReader br;
+    String lookForInput;
+    public final static Object inputLock = new Object();
+    public boolean test;
     public acceptUserInput(){
     }
-
+    // read input, when input is read start another thread
     @Override
     public void run() {
         super.run();
         try {
+            hasResponded = false;
             br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println(br.ready() + "STATUS");
-            getInput();
-        } catch (IOException e) {
+            sleep();
+        } catch (IOException | InterruptedException e) {
             System.out.println("exception caught");
             //e.printStackTrace();
         }
     }
-    public void getInput() throws IOException {
-        String lookForInput = null;
-        while(lookForInput == null){
-            lookForInput = br.readLine();
+    public void getInput() throws IOException, InterruptedException {
+        lookForInput = null;
+        while (lookForInput == null && EgyptianRatScrew.listeningForInput) {
+            lookForInput = this.br.readLine();
         }
         System.out.println("detected");
-        synchronized (this){
-            System.out.println("notfying");
-            notifyAll();
-            System.out.println("notified");
+        synchronized (EgyptianRatScrew.gameLock) {
+            hasResponded = true;
+            EgyptianRatScrew.gameLock.notifyAll();
         }
-    }
-    public  void close() throws IOException {
-        interrupt();
-    }
+        sleep();
+
 
     }
+    public void sleep() throws InterruptedException, IOException {
+        synchronized (inputLock){
+            inputLock.wait(0);
+            System.out.println("notifyed");
+        }
+        getInput();
+    }
+}

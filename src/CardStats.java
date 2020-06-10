@@ -4,15 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface CardStats {
-    public enum Suit {
+     enum Suit {
         CLUB,DIAMOND,SPADE,HEART
     }
-    public enum Value {
+    enum Value {
         TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,TEN,JACK,KING,QUEEN,ACE
     }
 
-    final HashMap<Value, Integer> alphaNumeric = new HashMap<Value, Integer>()
-    {{
+    HashMap<Value, Integer> alphaNumeric = new HashMap<>() {{
         put(Value.ACE, 1);
         put(Value.TWO, 2);
         put(Value.THREE, 3);
@@ -26,13 +25,13 @@ public interface CardStats {
         put(Value.JACK, 11);
         put(Value.QUEEN, 12);
         put(Value.KING, 13);
-    
-    
+
+
     }};
 
     
-    final Set<Integer> marriage = new HashSet<Integer>(Arrays.asList(12, 13));
+    Set<Integer> marriage = new HashSet<>(Arrays.asList(12, 13));
 
-    final Set<Integer> royalFamily = new HashSet<Integer>(Arrays.asList(11,12, 13));
+    Set<Integer> royalFamily = new HashSet<>(Arrays.asList(11, 12, 13));
 
 }

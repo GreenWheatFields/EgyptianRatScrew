@@ -1,11 +1,8 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class Tests implements CardStats{
     Deck player1Deck, player2Deck, drawingDeck;
@@ -20,7 +17,7 @@ public class Tests implements CardStats{
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         drawingDeck = new Deck();
         drawingDeck.createFullDeck();
 
@@ -119,7 +116,7 @@ public class Tests implements CardStats{
         result = ers.isSlapable(drawingDeck, 2);
         //royal family should be first not ascend/descend
 
-        assertFalse(target.reason() == result.reason());
+        assertFalse(target.reason().equals(result.reason()));
         
     }
     @Test //@Ignore

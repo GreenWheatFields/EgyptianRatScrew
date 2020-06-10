@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -7,44 +6,82 @@ import java.util.Scanner;
 public class EgyptianRatScrew extends Thread implements CardStats{
     private static Deck drawingDeck, player1Deck, player2Deck;
     public static Scanner userInput = new Scanner(System.in);
+    public static boolean listeningForInput = true;
+
     public static final Object gameLock = new Object();
-    public static volatile boolean wokenByUserInput;
+
+
     public void gameSetup(){
         
         drawingDeck = new Deck();
         drawingDeck.createShuffledDeck();
         player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
+        player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
         int playerCount = 2;
         int split = 52 / playerCount;
         
     }
 
-    public void gameLoop() throws InterruptedException, IOException {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void gameLoop() throws InterruptedException {
         gameSetup();
         int count = 0;
-
+        acceptUserInput input = new acceptUserInput();
+        input.setName("InputThread");
+        input.start();
+        //TODO add multiple decks and methods to add user decks etc...
         while (count <= 52){
-            acceptUserInput input = new acceptUserInput();
-            input.setName("InputThread");
-            input.start();
-            acceptUserInput.hasResponded = false;
-
             Result result = isSlapable(drawingDeck, count);
-
             System.out.println(drawingDeck.getCard(count));
-            synchronized (gameLock) {
-                gameLock.wait(1000);
-            }
-            input.interrupt();
-            if (wokenByUserInput) System.out.println("woken by user input");
 
-            wokenByUserInput = false;
+            synchronized (acceptUserInput.inputLock){
+                acceptUserInput.inputLock.notifyAll();
+            }
+            synchronized (gameLock) {
+                gameLock.wait(2000);
+            }
+            //
             if(acceptUserInput.hasResponded && result.isSlappable()){
                 System.out.println("CORRECT + " + result.reason());
+            }else{
+                System.out.println("didnt anser");
             }
             count++;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public Result isSlapable(Deck deck, int count){
         Result result;
         if(count < 1){
@@ -131,17 +168,16 @@ public class EgyptianRatScrew extends Thread implements CardStats{
             gameLoop();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws InterruptedException {
         //gameLoop();
         EgyptianRatScrew ers = new EgyptianRatScrew();
         ers.setName("GameThread");
         ers.start();
-        System.out.println("done");
+        ers.join();
+        System.exit(0);
     }
 }
