@@ -47,13 +47,9 @@ public class Deck implements CardStats{
 
     public static Deck drawDeck(Deck drawingFrom, int beginIndex, int endIndex){
         Deck deck = new Deck();
-        deck.cards = new ArrayList<Card>(drawingFrom.cards.subList(0, 10));
+        deck.cards = new ArrayList<Card>(drawingFrom.cards.subList(beginIndex, endIndex));
         return deck;
     }
-
-//    public void shuffle(){
-//        Collections.shuffle(this.cards);
-//    }
 
     public Card getCard(int i){
         return this.cards.get(i);
@@ -67,6 +63,9 @@ public class Deck implements CardStats{
         for (Card card : cards) {
             this.cards.add(card);
         }
+    }
+    public void add(Card toAdd){
+        this.cards.add(toAdd);
     }
     
 

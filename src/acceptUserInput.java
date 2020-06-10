@@ -42,6 +42,7 @@ public class acceptUserInput extends Thread {
             inputLock.wait(0);
             System.out.println("notifyed");
         }
+        hasResponded = false;
         getInput();
     }
 }

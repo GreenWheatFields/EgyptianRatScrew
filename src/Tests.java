@@ -4,8 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+//probably better practice to split tests into class, like a class for testing deck, card, etc. but i'm almost done. next time.
 public class Tests implements CardStats{
-    Deck player1Deck, player2Deck, drawingDeck;
+    Deck player1Deck, player2Deck, drawingDeck, prizeDeck;
     int playerCount = 2;
     int split = 52 / playerCount;
 
@@ -23,11 +24,19 @@ public class Tests implements CardStats{
 
     }
     
-    @Test @Ignore
+    @Test 
     public void test_deckSize(){
         player1Deck = Deck.drawDeck(drawingDeck, 0, 10);
         assertEquals(drawingDeck.getSize(), 52);
         assertEquals(player1Deck.getSize(), 10);
+
+        player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
+        player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
+        System.out.println(drawingDeck.getSize() - 26);
+        assertEquals(26, (player2Deck.getSize() + player1Deck.getSize()) / 2 );
+        assertFalse(player1Deck.getCard(25).toString().equals(player2Deck.getCard(0).toString()));
+        //assertTrue(player2Deck.getCard(25) != null);
+
     }
     @Test @Ignore
     public void testSplit(){
@@ -90,7 +99,7 @@ public class Tests implements CardStats{
         assertEquals(target.reason(), result.reason());
 
     }
-    @Test //@Ignore
+    @Test @Ignore
     public void testAscending(){
         Result target = new Result(true, "Ascending");
 
@@ -119,7 +128,7 @@ public class Tests implements CardStats{
         assertFalse(target.reason().equals(result.reason()));
         
     }
-    @Test //@Ignore
+    @Test @Ignore
     public void testDescending(){
         Result target = new Result(true, "Descending");
 
@@ -132,7 +141,6 @@ public class Tests implements CardStats{
         Card jack = new Card(Suit.HEART, Value.JACK);
 
 
-
         drawingDeck.customFill(jack, ten, nine);
         result = ers.isSlapable(drawingDeck, 2);
         assertEquals(target.reason(), result.reason());
@@ -142,6 +150,14 @@ public class Tests implements CardStats{
         result = ers.isSlapable(drawingDeck, 2);
         assertEquals(target.reason(), result.reason());
         
+    }
+    @Test
+    public void testAdd(){
+        player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
+        player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
+        prizeDeck = new Deck();
+        prizeDeck.add(player1Deck.getCard(0));
+        System.out.println(prizeDeck.getCard(0).toString());
     }
 
     

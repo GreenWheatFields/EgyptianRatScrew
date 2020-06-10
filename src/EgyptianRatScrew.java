@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 
 public class EgyptianRatScrew extends Thread implements CardStats{
-    private static Deck drawingDeck, player1Deck, player2Deck;
+    private static Deck drawingDeck, player1Deck, player2Deck, prizeDeck;
     public static Scanner userInput = new Scanner(System.in);
     public static boolean listeningForInput = true;
 
@@ -17,25 +17,11 @@ public class EgyptianRatScrew extends Thread implements CardStats{
         drawingDeck.createShuffledDeck();
         player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
         player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
+        prizeDeck = new Deck();
         int playerCount = 2;
         int split = 52 / playerCount;
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void gameLoop() throws InterruptedException {
         gameSetup();
@@ -44,9 +30,12 @@ public class EgyptianRatScrew extends Thread implements CardStats{
         input.setName("InputThread");
         input.start();
         //TODO add multiple decks and methods to add user decks etc...
+        // start with even deck. deal into a center deck, first to zero loses
         while (count <= 52){
+            System.out.println(count);
             Result result = isSlapable(drawingDeck, count);
-            System.out.println(drawingDeck.getCard(count));
+            prizeDeck.add((count % 2 == 0) ? player1Deck.getCard(count) : player2Deck.getCard(count));
+            System.out.println(prizeDeck.getCard(count));
 
             synchronized (acceptUserInput.inputLock){
                 acceptUserInput.inputLock.notifyAll();
@@ -54,34 +43,16 @@ public class EgyptianRatScrew extends Thread implements CardStats{
             synchronized (gameLock) {
                 gameLock.wait(2000);
             }
-            //
+
             if(acceptUserInput.hasResponded && result.isSlappable()){
                 System.out.println("CORRECT + " + result.reason());
+                //TODO write method to add to the bottom of a deck
             }else{
                 System.out.println("didnt anser");
             }
             count++;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public Result isSlapable(Deck deck, int count){
         Result result;
         if(count < 1){
