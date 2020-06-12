@@ -26,6 +26,7 @@ public class EgyptianRatScrew extends Thread implements CardStats{
     public void gameLoop() throws InterruptedException {
         gameSetup();
         int count = 0;
+        int indices = 0;
         acceptUserInput input = new acceptUserInput();
         input.setName("InputThread");
         input.start();
@@ -33,9 +34,10 @@ public class EgyptianRatScrew extends Thread implements CardStats{
         // start with even deck. deal into a center deck, first to zero loses
         while (count <= 52){
             System.out.println(count);
-            Result result = isSlapable(drawingDeck, count);
             prizeDeck.add((count % 2 == 0) ? player1Deck.getCard(count) : player2Deck.getCard(count));
-            System.out.println(prizeDeck.getCard(count));
+            Result result = isSlapable(prizeDeck, indices);
+
+            System.out.println(prizeDeck.getCard(indices));
 
             synchronized (acceptUserInput.inputLock){
                 acceptUserInput.inputLock.notifyAll();
@@ -46,11 +48,21 @@ public class EgyptianRatScrew extends Thread implements CardStats{
 
             if(acceptUserInput.hasResponded && result.isSlappable()){
                 System.out.println("CORRECT + " + result.reason());
-                //TODO write method to add to the bottom of a deck
-            }else{
-                System.out.println("didnt anser");
+                player1Deck.addToDeck(prizeDeck);
+                prizeDeck.clear();
+                indices = 0;
+                count++;
+                continue;
+            }else if(result.isSlappable()){
+                System.out.println("computer slaps");
+                player1Deck.addToDeck(prizeDeck);
+                prizeDeck.clear();
+                indices = 0;
+                count++;
+                continue;
             }
             count++;
+            indices++;
         }
     }
     public Result isSlapable(Deck deck, int count){

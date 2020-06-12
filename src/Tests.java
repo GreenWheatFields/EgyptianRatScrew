@@ -151,13 +151,17 @@ public class Tests implements CardStats{
         assertEquals(target.reason(), result.reason());
         
     }
-    @Test
+    @Test @Ignore
     public void testAdd(){
         player1Deck = Deck.drawDeck(drawingDeck, 0, 26);
         player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
         prizeDeck = new Deck();
         prizeDeck.add(player1Deck.getCard(0));
         System.out.println(prizeDeck.getCard(0).toString());
+    }
+    @Test @Ignore
+    public void testTwoSizeDecks(){
+
     }
 
     

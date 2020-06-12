@@ -4,7 +4,7 @@ import java.util.Collections;
 public class Deck implements CardStats{
 
     private ArrayList<Card> cards;
-    
+
 
 
     public Deck(){
@@ -66,6 +66,12 @@ public class Deck implements CardStats{
     }
     public void add(Card toAdd){
         this.cards.add(toAdd);
+    }
+    public void addToDeck(Deck addingFrom){
+        this.cards.addAll(addingFrom.cards);
+    }
+    public void clear(){
+        this.cards.clear();
     }
     
 
