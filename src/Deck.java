@@ -5,7 +5,7 @@ public class Deck implements CardStats{
 
     private ArrayList<Card> cards;
 
-
+    // Arraylist could probably be public
 
     public Deck(){
         this.cards = new ArrayList<Card>();
@@ -64,8 +64,9 @@ public class Deck implements CardStats{
             this.cards.add(card);
         }
     }
-    public void add(Card toAdd){
-        this.cards.add(toAdd);
+    public void add(Deck drawingFrom, int index){
+        this.cards.add(drawingFrom.getCard(index));
+        drawingFrom.cards.remove(index);
     }
     public void addToDeck(Deck addingFrom){
         this.cards.addAll(addingFrom.cards);

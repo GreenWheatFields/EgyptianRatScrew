@@ -22,19 +22,27 @@ public class EgyptianRatScrew extends Thread implements CardStats{
         int split = 52 / playerCount;
         
     }
-
+    @SuppressWarnings("InfiniteLoopStatement")
     public void gameLoop() throws InterruptedException {
         gameSetup();
         int count = 0;
         int indices = 0;
+        int deck1count = 0, deck2count = 0;
         acceptUserInput input = new acceptUserInput();
         input.setName("InputThread");
         input.start();
-        //TODO add multiple decks and methods to add user decks etc...
-        // start with even deck. deal into a center deck, first to zero loses
-        while (count <= 52){
-            System.out.println(count);
-            prizeDeck.add((count % 2 == 0) ? player1Deck.getCard(count) : player2Deck.getCard(count));
+        while (true){
+            deck1count = (deck1count >= player1Deck.getSize()) ? 0 : deck1count;
+            deck2count = (deck2count >= player2Deck.getSize()) ? 0 : deck2count;
+
+            System.out.println(player1Deck.getSize());
+            System.out.println(player2Deck.getSize());
+
+            if (count % 2 == 0){
+                prizeDeck.add(player1Deck, deck1count);
+            }else{
+                prizeDeck.add(player2Deck, deck2count);
+            }
             Result result = isSlapable(prizeDeck, indices);
 
             System.out.println(prizeDeck.getCard(indices));
@@ -52,15 +60,18 @@ public class EgyptianRatScrew extends Thread implements CardStats{
                 prizeDeck.clear();
                 indices = 0;
                 count++;
+
                 continue;
             }else if(result.isSlappable()){
                 System.out.println("computer slaps");
-                player1Deck.addToDeck(prizeDeck);
+                player2Deck.addToDeck(prizeDeck);
                 prizeDeck.clear();
                 indices = 0;
                 count++;
                 continue;
             }
+            deck1count++;
+            deck2count++;
             count++;
             indices++;
         }
