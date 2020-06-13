@@ -87,7 +87,7 @@ public class EgyptianRatScrew extends Thread implements CardStats{
                 count++;
                 continue;
             }else if(acceptUserInput.hasResponded && !result.isSlappable()){
-                System.out.println("YOU SLAPPED INCORRECTLY" + result.reason());
+                System.out.println("YOU SLAPPED INCORRECTLY " + result.reason());
                 player2Deck.addToDeck(prizeDeck);
                 Dialogues.showCardCounts();
                 prizeDeck.clear();
@@ -106,7 +106,7 @@ public class EgyptianRatScrew extends Thread implements CardStats{
                 //one in 10 chance of slapping incorrectly
                 int chance = random.nextInt(10) + 1;
                 if (chance == 5){
-                    System.out.println("COMPUTER SLAPS INCORRECTLY" + result.reason());
+                    System.out.println("COMPUTER SLAPS INCORRECTLY " + result.reason());
                     player1Deck.addToDeck(prizeDeck);
                     Dialogues.showCardCounts();
                     prizeDeck.clear();
