@@ -34,14 +34,14 @@ public class Tests implements CardStats{
         player2Deck = Deck.drawDeck(drawingDeck,26, drawingDeck.getSize());
         System.out.println(drawingDeck.getSize() - 26);
         assertEquals(26, (player2Deck.getSize() + player1Deck.getSize()) / 2 );
-        assertFalse(player1Deck.getCard(25).toString().equals(player2Deck.getCard(0).toString()));
+        assertNotEquals(player1Deck.getCard(25).toString(), player2Deck.getCard(0).toString());
         //assertTrue(player2Deck.getCard(25) != null);
 
     }
     @Test @Ignore
     public void testSplit(){
         try {
-            player1Deck = Deck.drawDeck(drawingDeck, split - split , split);
+            player1Deck = Deck.drawDeck(drawingDeck, 0, split);
             player2Deck = Deck.drawDeck(drawingDeck, split, split+= split);
             System.out.println(player2Deck.getCard(52));
         } catch (IndexOutOfBoundsException e) {
@@ -125,7 +125,7 @@ public class Tests implements CardStats{
         result = ers.isSlapable(drawingDeck, 2);
         //royal family should be first not ascend/descend
 
-        assertFalse(target.reason().equals(result.reason()));
+        assertNotEquals(target.reason(), result.reason());
         
     }
     @Test @Ignore
@@ -134,7 +134,6 @@ public class Tests implements CardStats{
 
         Card two = new Card(Suit.CLUB, Value.TWO);
         Card three = new Card(Suit.HEART, Value.THREE);
-        Card four = new Card(Suit.HEART, Value.FOUR);
         Card ace = new Card(Suit.SPADE, Value.ACE);
         Card nine = new Card(Suit.CLUB, Value.NINE);
         Card ten = new Card(Suit.DIAMOND, Value.TEN);

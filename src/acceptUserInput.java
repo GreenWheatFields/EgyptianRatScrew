@@ -7,7 +7,6 @@ public class acceptUserInput extends Thread {
     BufferedReader br;
     String lookForInput;
     public final static Object inputLock = new Object();
-    public boolean test;
     public acceptUserInput(){
     }
     // read input, when input is read start another thread
@@ -18,9 +17,8 @@ public class acceptUserInput extends Thread {
             hasResponded = false;
             br = new BufferedReader(new InputStreamReader(System.in));
             sleep();
-        } catch (IOException | InterruptedException e) {
-            System.out.println("exception caught");
-            //e.printStackTrace();
+        } catch (IOException | InterruptedException ignored) {
+
         }
     }
     public void getInput() throws IOException, InterruptedException {
@@ -28,7 +26,6 @@ public class acceptUserInput extends Thread {
         while (lookForInput == null && EgyptianRatScrew.listeningForInput) {
             lookForInput = this.br.readLine();
         }
-        System.out.println("detected");
         synchronized (EgyptianRatScrew.gameLock) {
             hasResponded = true;
             EgyptianRatScrew.gameLock.notifyAll();
@@ -40,7 +37,6 @@ public class acceptUserInput extends Thread {
     public void sleep() throws InterruptedException, IOException {
         synchronized (inputLock){
             inputLock.wait(0);
-            System.out.println("notifyed");
         }
         hasResponded = false;
         getInput();
